@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>学習時間一覧</title>
+</head>
+<body>
+	<h1>学習時間一覧</h1>
+	<a th:href="@{/studytime/new}">学習を開始する</a>
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>開始時間</th>
+			<th>終了時間</th>
+		</tr>
+		<tr th:each="studyTime : ${studyTimes}">
+			<td th:text="${studyTime.studyTimesId}"></td>
+			<td th:text="${studyTime.startTime}"></td>
+			<td th:text="${studyTime.endTime}"></td>
+			<td>
+				<a th:href="@{/studytime/{id}/edit(id=${studyTime.studyTimesId})}">編集</a>
+				<form th:action="@{/studytime/{id}/delete(id=${studyTime.studyTimesId})}" method="post" style="display: inline;">
+					<button type="submit">削除</button>
+				</form>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

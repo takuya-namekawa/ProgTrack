@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>学習時間の入力</title>
+	<script>
+		function setCurrentTime(field) {
+			const now = new Date();
+			const formattedTime = now.toISOString().slice(0, 16);
+			document.getElementById(field).value = formattedTime;
+		}
+	</script>
+</head>
+<body>
+	<h1>学習時間の入力</h1>
+	<form th:action="@{/studytime}" th:object="${studyTimeObject}" method="post">
+		<label>開始時間:</label>
+		<input type="datetime-local" id="startTime" th:field="*{startTime}" required />
+		<button type="button" onclick="setCurrentTime('startTime')">学習開始</button>
+		
+		<label>終了時間</label>
+		<input type="datetime-local" id="endTime" th:field="*{endTime}" required />
+		<button type="button" onclick="setCurrentTime('endTime')">学習終了</button>
+		
+		<button type="submit">保存</button>
+	</form>
+	
+	<a href="/studytime">戻る</a>
+</body>
+</html>
+

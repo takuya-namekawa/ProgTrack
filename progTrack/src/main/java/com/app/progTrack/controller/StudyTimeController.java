@@ -1,5 +1,7 @@
 package com.app.progTrack.controller;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.app.progTrack.entity.StudyTime;
 import com.app.progTrack.service.StudyTimeService;
@@ -36,8 +39,22 @@ public class StudyTimeController {
 	}
 	
 	@PostMapping
-	public String createStudyTime(@ModelAttribute StudyTime studyTime) {
-		studyTimeService.saveStudyTime(studyTime);
+	public String createStudyTime(@ModelAttribute StudyTime studyTime, @RequestParam String action) {
+		
+		if ("start".equals(action)) {
+			studyTime.setStartTime(studyTimeService.convertToJST(LocalDateTime.now(ZoneId.of("UTC"))));
+			studyTime.setEndTime(null);
+			studyTimeService.saveStudyTime(studyTime);
+		} else if ("end".equals(action)) {
+			// 直近の学習セッションを取得する
+			StudyTime lastStudyTime = studyTimeService.getLastStudyTime();
+			
+			if (lastStudyTime != null) {
+				lastStudyTime.setEndTime(studyTimeService.convertToJST(LocalDateTime.now(ZoneId.of("UTC"))));
+				studyTimeService.saveStudyTime(lastStudyTime);
+			}
+		}
+		
 		return "redirect:/studytime";
 	}
 	
@@ -45,7 +62,7 @@ public class StudyTimeController {
 	public String editStudyTimeForm(@PathVariable Long id, Model model) {
 		StudyTime studyTime = studyTimeService.getStudyTime(id);
 		model.addAttribute("studyTimeObject", studyTime);
-		return "studytime/studyTimeForm";
+		return "studytime/edit";
 	}
 	
 	@PostMapping("/{id}")

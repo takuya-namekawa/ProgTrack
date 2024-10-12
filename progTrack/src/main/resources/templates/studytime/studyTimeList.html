@@ -9,14 +9,15 @@
 	<a th:href="@{/studytime/new}">学習を開始する</a>
 	<table>
 		<tr>
-			<th>ID</th>
+			<th>日付</th>
 			<th>開始時間</th>
 			<th>終了時間</th>
+			<th>操作</th>
 		</tr>
 		<tr th:each="studyTime : ${studyTimes}">
-			<td th:text="${studyTime.studyTimesId}"></td>
-			<td th:text="${studyTime.startTime}"></td>
-			<td th:text="${studyTime.endTime}"></td>
+			<td th:text="${studyTime.startTime.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy/MM/dd'))}"></td>
+			<td th:text="${studyTime.startTime.format(T(java.time.format.DateTimeFormatter).ofPattern('HH時mm分'))}"></td>
+			<td th:text="${studyTime.endTime != null ? studyTime.endTime.format(T(java.time.format.DateTimeFormatter).ofPattern('HH時mm分')): ''}"></td>
 			<td>
 				<a th:href="@{/studytime/{id}/edit(id=${studyTime.studyTimesId})}">編集</a>
 				<form th:action="@{/studytime/{id}/delete(id=${studyTime.studyTimesId})}" method="post" style="display: inline;">

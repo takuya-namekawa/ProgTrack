@@ -3,16 +3,39 @@
 <head>
 	<meta charset="UTF-8">
 	<title>学習時間の入力</title>
+	<script>
+		function updateTime() {
+			// Ajaxでサーバーから現在の時刻を取得
+			fetch('/studytime/current-time')
+			.then(response => response.text())
+			.then(data => {
+				document.getElementById('currentTime').textContent = data; // 取得した時刻を表示
+			})
+			.catch(error => console.error('Error:', error));
+		}
+		
+		// 1秒ごとにupdateTime関数を呼び出す
+		setInterval(updateTime, 1000);
+
+	</script>
 </head>
 <body>
 	<h1>学習時間の入力</h1>
-	<form th:action="@{/studytime}"  method="post">
+	
+	<div>
+		<p th:text="${date}"></p>
+		<p th:text="${currentDayOfWeek}"></p>
+		<p id="currentTime" th:text="${time}"></p>
+	</div>
+	
+	<form th:action="@{/studytime}" method="post">
 		<button type="submit" name="action" value="start">学習開始</button>
-		
 		<button type="submit" name="action" value="end">学習終了</button>
 	</form>
 	
 	<a href="/studytime">戻る</a>
+	
+
 </body>
 </html>
 

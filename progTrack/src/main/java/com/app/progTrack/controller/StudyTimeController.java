@@ -2,7 +2,10 @@ package com.app.progTrack.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.progTrack.entity.StudyTime;
 import com.app.progTrack.service.StudyTimeService;
@@ -34,8 +38,31 @@ public class StudyTimeController {
 	
 	@GetMapping("/new")
 	public String newStudyTimeForm(Model model) {
+		
+		// ベースとなる日付を取得する　この場合はJST取得の日付 現在の時刻取得用
+		LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
+		// どういう型で用意するかを定義
+		DateTimeFormatter dateFormateer = DateTimeFormatter.ofPattern("MM/dd"); // 日付で形成する
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		// 現在の時刻にあてはめる
+		String date = currentDateTime.format(dateFormateer);
+		String time = currentDateTime.format(timeFormatter);
+
 		model.addAttribute("studyTimeObject", new StudyTime());
+		model.addAttribute("date", date);
+		model.addAttribute("time", time); //ページが読み込まれた時の初期表示の時刻表示用
+		// 曜日を取得する
+		model.addAttribute("currentDayOfWeek", currentDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.JAPAN));
 		return "studytime/studyTimeForm";
+	}
+	
+	// 時刻を返すエンドポイント
+	@GetMapping("/current-time")
+	@ResponseBody
+	public String getCurrentTime() {
+		LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		return currentDateTime.format(formatter);
 	}
 	
 	@PostMapping

@@ -24,6 +24,12 @@ public class StudyTimeService {
 		studyTimeRepository.save(studyTime);
 	}
 	
+	// 月毎の累計時間を取得する
+	public long getTotalStudyTimeForMonth(int month, int year) {
+		Long total = studyTimeRepository.findTotalStudyTimeByMonth(month, year);
+		return total != null ? total : 0; // nullの場合は0を返す
+	}
+	
 	// 最後のレコードを取得する
 	public StudyTime getLastStudyTime() {
 		List<StudyTime> studyTimes = studyTimeRepository.findAll();
@@ -38,6 +44,13 @@ public class StudyTimeService {
 		ZonedDateTime jstZonde = utcZoned.withZoneSameInstant(ZoneId.of("Asia/Tokyo"));
 		// LocalDateTimeに変換する
 		return jstZonde.toLocalDateTime();
+	}
+	
+	// 学習中の判定をする
+	public boolean isLiarningActive() {
+		StudyTime lastStudyTime = getLastStudyTime(); // 最後のレコードを取得
+		// lastStudyTimeがnullではない　且つ　getIsLearningメソッドがtrueの場合に戻り値はtrueが返る
+		return lastStudyTime != null && Boolean.TRUE.equals(lastStudyTime.getIsLearning());
 	}
 	
 	// 一覧ページ表示用

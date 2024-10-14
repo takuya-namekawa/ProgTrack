@@ -7,6 +7,8 @@
 <body>
 	<h1>学習時間一覧</h1>
 	<a th:href="@{/studytime/new}">学習を開始する</a>
+	<p>当月の学習時間: <sapn th:text="${currentMonthTotal}"></sapn></p>
+	<p>前月の学習時間: <sapn th:text="${lastMonthTotal}"></sapn></p>
 	<table>
 		<tr>
 			<th>日付</th>

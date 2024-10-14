@@ -1,5 +1,6 @@
 package com.app.progTrack.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +34,18 @@ public class StudyTimeController {
 	public String listStudyTimes(Model model) {
 		List<StudyTime> studyTimes = studyTimeService.getAllStudyTimes();
 		model.addAttribute("studyTimes", studyTimes);
+		
+		// 現在の月と前月の累計時間を取得する
+		int currentMonth = LocalDate.now().getMonthValue();
+		int currentYear = LocalDate.now().getYear();
+		long currentMonthTotal = studyTimeService.getTotalStudyTimeForMonth(currentMonth, currentYear);
+		
+		long lastMonthTotal = studyTimeService.getTotalStudyTimeForMonth(currentMonth - 1 == 0 ? 12 : currentMonth -1 , currentMonth - 1 == 0 ? currentYear - 1 : currentYear);
+		
+		
+		model.addAttribute("currentMonthTotal", currentMonthTotal);
+		model.addAttribute("lastMonthTotal", lastMonthTotal);
+		
 		return "studytime/studyTimeList";
 	}
 	
@@ -43,7 +56,7 @@ public class StudyTimeController {
 		LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
 		// どういう型で用意するかを定義
 		DateTimeFormatter dateFormateer = DateTimeFormatter.ofPattern("MM/dd"); // 日付で形成する
-		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // 時間で形成する
 		// 現在の時刻にあてはめる
 		String date = currentDateTime.format(dateFormateer);
 		String time = currentDateTime.format(timeFormatter);
@@ -53,6 +66,8 @@ public class StudyTimeController {
 		model.addAttribute("time", time); //ページが読み込まれた時の初期表示の時刻表示用
 		// 曜日を取得する
 		model.addAttribute("currentDayOfWeek", currentDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.JAPAN));
+		// 学習中フラグの状態を追加する
+		model.addAttribute("isLearningActive", studyTimeService.isLiarningActive());
 		return "studytime/studyTimeForm";
 	}
 	
@@ -71,6 +86,7 @@ public class StudyTimeController {
 		if ("start".equals(action)) {
 			studyTime.setStartTime(studyTimeService.convertToJST(LocalDateTime.now(ZoneId.of("UTC"))));
 			studyTime.setEndTime(null);
+			studyTime.setIsLearning(true);
 			studyTimeService.saveStudyTime(studyTime);
 		} else if ("end".equals(action)) {
 			// 直近の学習セッションを取得する
@@ -78,6 +94,7 @@ public class StudyTimeController {
 			
 			if (lastStudyTime != null) {
 				lastStudyTime.setEndTime(studyTimeService.convertToJST(LocalDateTime.now(ZoneId.of("UTC"))));
+				lastStudyTime.setIsLearning(false);
 				studyTimeService.saveStudyTime(lastStudyTime);
 			}
 		}

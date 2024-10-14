@@ -31,4 +31,7 @@ public class StudyTime {
 	
 	@Column(name = "updated_at", insertable = false, updatable = false)
 	private Timestamp updatedAt;
+	
+	@Column(name = "is_learning")
+	private Boolean isLearning;
 }

@@ -38,10 +38,18 @@ public class StudyTimeController {
 		// 現在の月と前月の累計時間を取得する
 		int currentMonth = LocalDate.now().getMonthValue();
 		int currentYear = LocalDate.now().getYear();
-		long currentMonthTotal = studyTimeService.getTotalStudyTimeForMonth(currentMonth, currentYear);
+		// 当月の学習時間を算出
+		double _currentMonthTotal = studyTimeService.getTotalStudyTimeForMonth(currentMonth, currentYear) / 60.0;
 		
-		long lastMonthTotal = studyTimeService.getTotalStudyTimeForMonth(currentMonth - 1 == 0 ? 12 : currentMonth -1 , currentMonth - 1 == 0 ? currentYear - 1 : currentYear);
+		// 現在の月 - 前月 = 0 なら　12を返す　0でないなら-1を引いた数字を返す
+		int lastMonth = currentMonth - 1 == 0 ? 12 : currentMonth -1;
+		int lastYear = currentMonth - 1 == 0 ? currentYear - 1 : currentYear;
+		// 前月の学習時間を算出
+		double _lastMonthTotal = studyTimeService.getTotalStudyTimeForMonth(lastMonth,  lastYear) / 60.0;
 		
+		// 小数点第二位を切り上げてから小数点第一位まで表示する
+		String currentMonthTotal = String.format("%.1f", Math.ceil(_currentMonthTotal * 10) / 10);
+		String lastMonthTotal = String.format("%.1f", Math.ceil(_lastMonthTotal * 10) / 10);
 		
 		model.addAttribute("currentMonthTotal", currentMonthTotal);
 		model.addAttribute("lastMonthTotal", lastMonthTotal);

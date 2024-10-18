@@ -3,46 +3,76 @@
 <head>
 	<meta charset="UTF-8">
 	<title>学習時間一覧</title>
+	<!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
 <body>
-	<h1>学習時間一覧</h1>
-	<a th:href="@{/studytime/new}">学習を開始する</a>
-	
-	<form action="/studytime" method="get">
-		<select name="year">
-			<th:block th:each="year : ${years}">
-				<option th:value="${year}" th:text="${year}" th:selected="${year == currentYear}"></option>
-			</th:block>
-		</select>
-		<select name="month">
-			<th:block th:each="month : ${months}">
-				<option th:value="${month}" th:text="${month}" th:selected="${month == currentMonth}"></option>
-			</th:block>
-		</select>
-		
-		<button type="submit">表示</button>
-	</form>
-	
-	<p>当月の学習時間: <sapn th:text="${currentMonthTotal}"></sapn></p>
-	<p>前月の学習時間: <sapn th:text="${lastMonthTotal}"></sapn></p>
-	<table>
-		<tr>
-			<th>日付</th>
-			<th>開始時間</th>
-			<th>終了時間</th>
-			<th>操作</th>
-		</tr>
-		<tr th:each="studyTime : ${studyTimes}">
-			<td th:text="${studyTime.startTime.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy/MM/dd'))}"></td>
-			<td th:text="${studyTime.startTime.format(T(java.time.format.DateTimeFormatter).ofPattern('HH時mm分'))}"></td>
-			<td th:text="${studyTime.endTime != null ? studyTime.endTime.format(T(java.time.format.DateTimeFormatter).ofPattern('HH時mm分')): ''}"></td>
-			<td>
-				<a th:href="@{/studytime/{id}/edit(id=${studyTime.studyTimesId})}">編集</a>
-				<form th:action="@{/studytime/{id}/delete(id=${studyTime.studyTimesId})}" method="post" style="display: inline;">
-					<button type="submit">削除</button>
-				</form>
-			</td>
-		</tr>
-	</table>
+	<div class="container">
+		<div class="row mb-3 mt-5">
+			<div class="col-6"><h3 class="text-left">学習時間一覧</h3></div>
+			<div class="col-6">
+				<div class="text-left mb-3 border-bottom pb-2">表示年月選択</div>
+				<div class="row mb-3">
+				    <form action="/studytime" method="get" class="d-flex">
+				        <div class="col-3 me-3">
+				            <select name="year" class="form-select">
+				                <th:block th:each="year : ${years}">
+				                    <option th:value="${year}" th:text="${year}" th:selected="${year == currentYear}"></option>
+				                </th:block>
+				            </select>
+				        </div>
+				        <div class="col-3 me-3">
+				            <select name="month" class="form-select">
+				                <th:block th:each="month : ${months}">
+				                    <option th:value="${month}" th:text="${month}" th:selected="${month == currentMonth}"></option>
+				                </th:block>
+				            </select>
+				        </div>
+				        <div class="col-3 ml-3">
+				            <button type="submit" class="btn btn-primary">表示</button>
+				        </div>
+				    </form>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-6">
+				<a th:href="@{/studytime/new}">学習時間を管理</a>
+			</div>
+			<div class="col-6">
+				<div class="row">
+					<div class="col-6"><p>当月: <sapn th:text="${currentMonthTotal}"></sapn>時間</p></div>
+					<div class="col-6"><p>前月: <sapn th:text="${lastMonthTotal}"></sapn>時間</p></div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<table class="table table-striped table-hover">
+			    <thead class="table-primary">
+			        <tr>
+			            <th>日付</th>
+			            <th>開始時間</th>
+			            <th>終了時間</th>
+			            <th>操作</th>
+			        </tr>
+			    </thead>
+			    <tbody>
+			        <tr th:each="studyTime : ${studyTimes}">
+			            <td th:text="${studyTime.startTime.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy/MM/dd'))}"></td>
+			            <td th:text="${studyTime.startTime.format(T(java.time.format.DateTimeFormatter).ofPattern('HH時mm分'))}"></td>
+			            <td th:text="${studyTime.endTime != null ? studyTime.endTime.format(T(java.time.format.DateTimeFormatter).ofPattern('HH時mm分')): ''}"></td>
+			            <td>
+			                <a th:href="@{/studytime/{id}/edit(id=${studyTime.studyTimesId})}" class="btn btn-warning btn-sm me-3">編集</a>
+			                <form th:action="@{/studytime/{id}/delete(id=${studyTime.studyTimesId})}" method="post" style="display: inline;">
+			                    <button type="submit" class="btn btn-danger btn-sm">削除</button>
+			                </form>
+			            </td>
+			        </tr>
+			    </tbody>
+			</table>
+		</div>
+	</div>
+	<!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 </body>
 </html>

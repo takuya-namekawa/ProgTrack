@@ -7,6 +7,22 @@
 <body>
 	<h1>学習時間一覧</h1>
 	<a th:href="@{/studytime/new}">学習を開始する</a>
+	
+	<form action="/studytime" method="get">
+		<select name="year">
+			<th:block th:each="year : ${years}">
+				<option th:value="${year}" th:text="${year}" th:selected="${year == currentYear}"></option>
+			</th:block>
+		</select>
+		<select name="month">
+			<th:block th:each="month : ${months}">
+				<option th:value="${month}" th:text="${month}" th:selected="${month == currentMonth}"></option>
+			</th:block>
+		</select>
+		
+		<button type="submit">表示</button>
+	</form>
+	
 	<p>当月の学習時間: <sapn th:text="${currentMonthTotal}"></sapn></p>
 	<p>前月の学習時間: <sapn th:text="${lastMonthTotal}"></sapn></p>
 	<table>

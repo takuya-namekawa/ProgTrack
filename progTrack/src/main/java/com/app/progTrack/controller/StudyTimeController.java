@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,19 +33,28 @@ public class StudyTimeController {
 	}
 	
 	@GetMapping
-	public String listStudyTimes(Model model) {
-		List<StudyTime> studyTimes = studyTimeService.getAllStudyTimes();
-		model.addAttribute("studyTimes", studyTimes);
+	public String listStudyTimes(Model model, @RequestParam(value = "month", required = false) Integer month, @RequestParam(value = "year", required = false) Integer year) {
 		
 		// 現在の月と前月の累計時間を取得する
 		int currentMonth = LocalDate.now().getMonthValue();
 		int currentYear = LocalDate.now().getYear();
+		
+		// 初期表示は当月の学習時間を取得する
+		if (month == null || year == null) {
+			month = currentMonth;
+			year = currentYear;
+		}
+		
+		// 学習時間を取得する
+		List<StudyTime> studyTimes = studyTimeService.findAllByMonthAndYear(month, year);
+		model.addAttribute("studyTimes", studyTimes);
+		
 		// 当月の学習時間を算出
-		double _currentMonthTotal = studyTimeService.getTotalStudyTimeForMonth(currentMonth, currentYear) / 60.0;
+		double _currentMonthTotal = studyTimeService.getTotalStudyTimeForMonth(month, year) / 60.0;
 		
 		// 現在の月 - 前月 = 0 なら　12を返す　0でないなら-1を引いた数字を返す
-		int lastMonth = currentMonth - 1 == 0 ? 12 : currentMonth -1;
-		int lastYear = currentMonth - 1 == 0 ? currentYear - 1 : currentYear;
+		int lastMonth = month - 1 == 0 ? 12 : month -1;
+		int lastYear = month - 1 == 0 ? year - 1 : year;
 		// 前月の学習時間を算出
 		double _lastMonthTotal = studyTimeService.getTotalStudyTimeForMonth(lastMonth,  lastYear) / 60.0;
 		
@@ -54,7 +65,23 @@ public class StudyTimeController {
 		model.addAttribute("currentMonthTotal", currentMonthTotal);
 		model.addAttribute("lastMonthTotal", lastMonthTotal);
 		
+		// セレクトボックス用のデータ
+		model.addAttribute("months", createMonthList());
+		model.addAttribute("years", createYearList(currentYear));
+		model.addAttribute("currentYear", year);
+		model.addAttribute("currentMonth", month);
+		
 		return "studytime/studyTimeList";
+	}
+	
+	// セレクトボックス用:月選択用
+	private List<Integer> createMonthList() {
+		return IntStream.rangeClosed(1, 12).boxed().collect(Collectors.toList());
+	}
+	
+	// セレクトボックス用：日選択用
+	private List<Integer> createYearList(int currentYear) {
+		return IntStream.rangeClosed(currentYear - 5, currentYear).boxed().collect(Collectors.toList());
 	}
 	
 	@GetMapping("/new")

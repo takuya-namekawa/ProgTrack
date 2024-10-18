@@ -24,6 +24,11 @@ public class StudyTimeService {
 		studyTimeRepository.save(studyTime);
 	}
 	
+	// セレクトボックスで選択された月のデータを取得する
+	public List<StudyTime> findAllByMonthAndYear(int month, int year) {
+		return studyTimeRepository.findAllByMonthAndYear(month, year);
+	}
+	
 	// 月毎の累計時間を取得する
 	public long getTotalStudyTimeForMonth(int month, int year) {
 		Long total = studyTimeRepository.findTotalStudyTimeByMonth(month, year);
@@ -53,10 +58,6 @@ public class StudyTimeService {
 		return lastStudyTime != null && Boolean.TRUE.equals(lastStudyTime.getIsLearning());
 	}
 	
-	// 一覧ページ表示用
-	public List<StudyTime> getAllStudyTimes() {
-		return studyTimeRepository.findAll();
-	}
 	// 編集用
 	public StudyTime getStudyTime(Long id) {
 		return studyTimeRepository.findById(id).orElse(null);

@@ -9,44 +9,51 @@
 </head>
 <body>
 	<header>
-		<nav>
-			<a th:href="@{/}">ProgTrack</a>
-			<ul>
-				<li>
-					<a th:href="@{/login}">ログイン</a>
-				</li>
-				<li>
-					<a th:href="@{/signup}">会員登録</a>
-				</li>
-			</ul>
+		<nav class="navbar navbar-expand-lg mb-5" style="background-color: white; box-shadow: 0 2px 5px rgba(128, 128, 128, 0.5);">
+		    <div class="container">
+		        <a class="navbar-brand" th:href="@{/}">
+		            <img src="/images/heder_logo.png" alt="PROG-TRACK" style="height: 50px;" />
+		        </a>
+		        <ul class="navbar-nav">
+		            <li class="nav-item">
+		                <a class="nav-link" th:href="@{/login}">ログイン</a>
+		            </li>
+		            <li class="nav-item">
+		                <a class="nav-link" th:href="@{/signup}">会員登録</a>
+		            </li>
+		        </ul>
+		    </div>
 		</nav>
 	</header>
 	<main>
-		<h1>ログイン</h1>
+		<div class="container d-flex align-items-center justify-content-center">
+		    <div class="row">
+		        <h1 class="mb-4 text-center" style="color: #2d196f;">ログイン</h1>
 		
-		<div th:if="${param.loggedOut}">
-			ログアウトしました
-		</div>
-		
-		<div th:if="${param.error}">
-			メールアドレス、パスワードが正しく入力されていません
-		</div>
-		
-		<form th:action="@{/login}" method="post">
-			
-			<div>
-				<input type="text" name="username" autocomplete="email" placeholder="メールアドレス" autoffocus>
-			</div>
-			<div>
-				<input type="password" name="password" autocomplete="new-password" placeholder="パスワード">
-			</div>
-			<div>
-				<button type="submit">ログイン</button>
-			</div>
-			
-		</form>
+		        <div th:if="${param.loggedOut}" class="alert alert-info" role="alert">
+		            ログアウトしました
+		        </div>
+		        
+		        <div th:if="${param.error}" class="alert alert-danger" role="alert">
+		            メールアドレス、パスワードが正しく入力されていません
+		        </div>
+		        
+		        <form th:action="@{/login}" method="post" class="p-4 border rounded shadow-sm bg-light">
+		            <div class="mb-3">
+		                <label class="form-label fw-bold">メールアドレス</label>
+		                <input type="text" name="username" autocomplete="email" placeholder="メールアドレス" class="form-control" autofocus required>
+		            </div>
+		            <div class="mb-3">
+		                <label class="form-label fw-bold">パスワード</label>
+		                <input type="password" name="password" autocomplete="new-password" placeholder="パスワード" class="form-control" required>
+		            </div>
+		            <div>
+		                <button type="submit" class="btn btn-primary w-100">ログイン</button>
+		            </div>
+		        </form>
+		    </div>
+		</div>	
 	</main>
-
 
 	<!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>

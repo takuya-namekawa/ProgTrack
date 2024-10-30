@@ -17,7 +17,7 @@
 		</div>
 		<div class="row justify-content-center">
 			<div class="col-6 text-end">
-				<button type="submit" class="btn btn-primary ms-6">新規アカウント登録</button>
+				<a th:href="@{/signup}" class="btn btn-primary ms-6">新規アカウント登録</a>
 			</div>
 			<div class="col-6 text-start">
 				<a th:href="@{/login}" onclick="event.preventDefault(); document.getElementById('login-form').submit();">すでにアカウントをお持ちの方</a>

@@ -25,13 +25,13 @@ public class StudyTimeService {
 	}
 	
 	// セレクトボックスで選択された月のデータを取得する
-	public List<StudyTime> findAllByMonthAndYear(int month, int year) {
-		return studyTimeRepository.findAllByMonthAndYear(month, year);
+	public List<StudyTime> findAllByMonthAndYear(int month, int year, Integer userId) {
+		return studyTimeRepository.findAllByMonthAndYear(month, year, userId);
 	}
 	
 	// 月毎の累計時間を取得する
-	public long getTotalStudyTimeForMonth(int month, int year) {
-		Long total = studyTimeRepository.findTotalStudyTimeByMonth(month, year);
+	public long getTotalStudyTimeForMonth(int month, int year, Integer userId) {
+		Long total = studyTimeRepository.findTotalStudyTimeByMonth(month, year, userId);
 		return total != null ? total : 0; // nullの場合は0を返す
 	}
 	

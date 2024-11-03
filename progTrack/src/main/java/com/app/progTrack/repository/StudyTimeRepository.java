@@ -11,10 +11,11 @@ import com.app.progTrack.entity.StudyTime;
 public interface StudyTimeRepository extends JpaRepository<StudyTime, Long>{
 	 
 	 // 学習時間を計算する
-	 @Query("SELECT SUM(TIMESTAMPDIFF(MINUTE, s.startTime, s.endTime)) FROM StudyTime s WHERE MONTH(s.startTime) = :month AND YEAR(s.startTime) = :year AND s.endTime IS NOT NULL")
-	 Long findTotalStudyTimeByMonth(@Param("month") int month, @Param("year") int year);
+	 @Query("SELECT SUM(TIMESTAMPDIFF(MINUTE, s.startTime, s.endTime)) FROM StudyTime s WHERE MONTH(s.startTime) = :month AND YEAR(s.startTime) = :year AND s.endTime IS NOT NULL AND s.userId = :userId")
+	 Long findTotalStudyTimeByMonth(@Param("month") int month, @Param("year") int year, @Param("userId") Integer userId);
 	 
 	 // 当月を絞り込む
-	 @Query("SELECT s FROM StudyTime s WHERE MONTH(s.startTime) = :month AND YEAR(s.startTime) = :year")
-	 List<StudyTime> findAllByMonthAndYear(@Param("month") int month, @Param("year") int year);
+	 @Query("SELECT s FROM StudyTime s WHERE MONTH(s.startTime) = :month AND YEAR(s.startTime) = :year AND s.userId = :userId")
+	 List<StudyTime> findAllByMonthAndYear(@Param("month") int month, @Param("year") int year, @Param("userId") Integer userId);
+	 
 }

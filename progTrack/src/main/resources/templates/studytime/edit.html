@@ -9,6 +9,7 @@
 <body>
 	<h1>学習時間の編集</h1>
 	<form th:action="@{/studytime/{id}(id=${studyTimeObject.studyTimesId})}" th:object="${studyTimeObject}" method="post">
+		<input type="hidden" th:field="*{userId}" />
 		<label>開始時間：</label>
 		<input type="datetime-local" th:field="*{startTime}" required />
 		<label>終了時間：</label>

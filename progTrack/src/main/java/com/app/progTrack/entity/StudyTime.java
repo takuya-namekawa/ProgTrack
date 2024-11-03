@@ -34,4 +34,8 @@ public class StudyTime {
 	
 	@Column(name = "is_learning")
 	private Boolean isLearning;
+	
+	// userIdを格納する事によって、学習時間がどのuserに紐づくかを判別する
+	@Column(name = "user_id")
+	private Integer userId;
 }

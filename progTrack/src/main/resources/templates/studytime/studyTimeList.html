@@ -64,7 +64,7 @@
 			        </tr>
 			    </thead>
 			    <tbody>
-			        <tr th:each="studyTime : ${studyTimes}">
+			        <tr th:each="studyTime : ${studyTimes}" th:if="${studyTime.userId == userId}">
 			            <td th:text="${studyTime.startTime.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy/MM/dd'))}"></td>
 			            <td th:text="${studyTime.startTime.format(T(java.time.format.DateTimeFormatter).ofPattern('HH時mm分'))}"></td>
 			            <td th:text="${studyTime.endTime != null ? studyTime.endTime.format(T(java.time.format.DateTimeFormatter).ofPattern('HH時mm分')): ''}"></td>

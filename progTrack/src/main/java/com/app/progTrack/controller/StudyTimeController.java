@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.progTrack.entity.StudyTime;
+import com.app.progTrack.security.UserDetailsImpl;
 import com.app.progTrack.service.StudyTimeService;
 
 @Controller
@@ -33,11 +35,12 @@ public class StudyTimeController {
 	}
 	
 	@GetMapping
-	public String listStudyTimes(Model model, @RequestParam(value = "month", required = false) Integer month, @RequestParam(value = "year", required = false) Integer year) {
-		
+	public String listStudyTimes(Model model, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestParam(value = "month", required = false) Integer month, @RequestParam(value = "year", required = false) Integer year) {
 		// 現在の月と前月の累計時間を取得する
 		int currentMonth = LocalDate.now().getMonthValue();
 		int currentYear = LocalDate.now().getYear();
+		Integer userId = userDetailsImpl.getId();
+		model.addAttribute("userId", userId);
 		
 		// 初期表示は当月の学習時間を取得する
 		if (month == null || year == null) {
@@ -46,17 +49,17 @@ public class StudyTimeController {
 		}
 		
 		// 学習時間を取得する
-		List<StudyTime> studyTimes = studyTimeService.findAllByMonthAndYear(month, year);
+		List<StudyTime> studyTimes = studyTimeService.findAllByMonthAndYear(month, year, userId);
 		model.addAttribute("studyTimes", studyTimes);
 		
 		// 当月の学習時間を算出
-		double _currentMonthTotal = studyTimeService.getTotalStudyTimeForMonth(month, year) / 60.0;
+		double _currentMonthTotal = studyTimeService.getTotalStudyTimeForMonth(month, year, userId) / 60.0;
 		
 		// 現在の月 - 前月 = 0 なら　12を返す　0でないなら-1を引いた数字を返す
 		int lastMonth = month - 1 == 0 ? 12 : month -1;
 		int lastYear = month - 1 == 0 ? year - 1 : year;
 		// 前月の学習時間を算出
-		double _lastMonthTotal = studyTimeService.getTotalStudyTimeForMonth(lastMonth,  lastYear) / 60.0;
+		double _lastMonthTotal = studyTimeService.getTotalStudyTimeForMonth(lastMonth, lastYear, userId) / 60.0;
 		
 		// 小数点第二位を切り上げてから小数点第一位まで表示する
 		String currentMonthTotal = String.format("%.1f", Math.ceil(_currentMonthTotal * 10) / 10);
@@ -116,12 +119,13 @@ public class StudyTimeController {
 	}
 	
 	@PostMapping
-	public String createStudyTime(@ModelAttribute StudyTime studyTime, @RequestParam String action) {
+	public String createStudyTime(@ModelAttribute StudyTime studyTime, @RequestParam String action, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
 		
 		if ("start".equals(action)) {
 			studyTime.setStartTime(studyTimeService.convertToJST(LocalDateTime.now(ZoneId.of("UTC"))));
 			studyTime.setEndTime(null);
 			studyTime.setIsLearning(true);
+			studyTime.setUserId(userDetailsImpl.getId());
 			studyTimeService.saveStudyTime(studyTime);
 		} else if ("end".equals(action)) {
 			// 直近の学習セッションを取得する

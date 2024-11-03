@@ -23,10 +23,8 @@ public class WebSecurityConfig {
 		
 		http.authorizeHttpRequests((requests) -> requests
 			// 全てのユーザーにアクセスを許可するURLを設定できる
-			.requestMatchers("/css/**").permitAll()
-			.requestMatchers("/").permitAll()
-			.requestMatchers("/images/**").permitAll()
-			.requestMatchers("/signup").permitAll()
+			.requestMatchers("/css/**", "/", "/images/**", "/signup").permitAll()
+			.requestMatchers("/studytime").authenticated()
 			.anyRequest().authenticated()
 		)
 		
@@ -62,4 +60,5 @@ public class WebSecurityConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
 }

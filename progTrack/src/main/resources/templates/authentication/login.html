@@ -26,17 +26,22 @@
 		</nav>
 	</header>
 	<main>
-		<div class="container d-flex align-items-center justify-content-center">
-		    <div class="row">
-		        <h1 class="mb-4 text-center" style="color: #2d196f;">ログイン</h1>
-		
+		<div class="container">
+			<div class="row text-center">
+				<div th:if="${successMessage}" th:text="${successMessage}" class="alert alert-info"></div>
 		        <div th:if="${param.loggedOut}" class="alert alert-info" role="alert">
 		            ログアウトしました
-		        </div>
-		        
+		        </div> 
 		        <div th:if="${param.error}" class="alert alert-danger" role="alert">
 		            メールアドレス、パスワードが正しく入力されていません
 		        </div>
+			</div>
+		</div>
+		
+		<div class="container d-flex align-items-center justify-content-center">
+		    <div class="row">
+		        <h1 class="mb-4 text-center" style="color: #2d196f;">ログイン</h1>
+		        
 		        
 		        <form th:action="@{/login}" method="post" class="p-4 border rounded shadow-sm bg-light">
 		            <div class="mb-3">

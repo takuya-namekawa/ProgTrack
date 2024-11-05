@@ -12,7 +12,8 @@
 		<li>
 			<a th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">ログアウト</a>
 			<form id="logout-form" th:action="@{/logout}" method="post"></form>
-		</li>	
+		</li>
+		ようこそ <span th:text="${currentUserName}"></span> さん	
 	</nav>
 	<div class="container">
 		<div class="row mb-3 mt-5">

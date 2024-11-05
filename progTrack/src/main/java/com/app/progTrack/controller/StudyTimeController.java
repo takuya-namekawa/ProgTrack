@@ -39,8 +39,10 @@ public class StudyTimeController {
 		// 現在の月と前月の累計時間を取得する
 		int currentMonth = LocalDate.now().getMonthValue();
 		int currentYear = LocalDate.now().getYear();
+		String currentUserName = userDetailsImpl.getName();
 		Integer userId = userDetailsImpl.getId();
 		model.addAttribute("userId", userId);
+		model.addAttribute("currentUserName", currentUserName);
 		
 		// 初期表示は当月の学習時間を取得する
 		if (month == null || year == null) {
